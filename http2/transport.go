@@ -830,9 +830,9 @@ func (t *Transport) ApplyPreset() {
 	case Chrome:
 		t.Settings = []Setting{
 			{ID: SettingHeaderTableSize, Val: 65536},
+			{ID: SettingEnablePush, Val: 0},
 			{ID: SettingMaxConcurrentStreams, Val: 1000},
 			{ID: SettingInitialWindowSize, Val: 6291456},
-			{ID: SettingMaxFrameSize, Val: 16384},
 			{ID: SettingMaxHeaderListSize, Val: 262144},
 		}
 	}
@@ -1413,6 +1413,11 @@ func (cc *ClientConn) writeHeaders(streamID uint32, endStream bool, maxFrameSize
 				BlockFragment: chunk,
 				EndStream:     endStream,
 				EndHeaders:    endHeaders,
+				Priority: PriorityParam{
+					StreamDep: 0,
+					Exclusive: true,
+					Weight:    255,
+				},
 			})
 			first = false
 		} else {
